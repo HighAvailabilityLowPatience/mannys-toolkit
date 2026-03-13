@@ -1,0 +1,14 @@
+Core playbooks
+install_docker.yml
+    installs docker engine
+    ensures service running
+
+deploy_container.yml
+    pulls docker images
+    runs containers
+Inventory system
+inventory.tpl
+    Terraform template
+
+inventory.ini
+    Generated host list

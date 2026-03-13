@@ -1,0 +1,11 @@
+main.tf
+    Defines infrastructure resources
+
+variables.tf
+    Defines configurable inputs
+
+terraform.tfvars
+    Supplies actual values
+
+outputs.tf
+    Exposes runtime values (public IP)

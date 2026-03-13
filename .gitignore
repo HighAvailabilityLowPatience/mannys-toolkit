@@ -1,0 +1,19 @@
+# Terraform state
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
+# SSH keys
+*.pem
+*.key
+# OS junk
+.DS_Store
+
+# Ansible generated inventory
+ansible/inventory.ini
+

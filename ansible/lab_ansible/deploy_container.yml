@@ -1,0 +1,83 @@
+---
+############################################################
+# Playbook: Deploy Application Containers
+#
+# Purpose:
+#   Run three Docker containers on the EC2 instance that
+#   Terraform created.
+#
+# Each container exposes port 8888 internally and we map it
+# to different host ports so all apps can run simultaneously.
+############################################################
+
+- name: Deploy Docker containers to EC2
+  hosts: web
+  become: yes
+
+  ##########################################################
+  # Variables
+  #
+  # Instead of repeating container tasks 3 times, we define
+  # the containers here and iterate through them later.
+  ##########################################################
+
+  vars:
+
+    containers:
+
+      - name: astro-calculator
+        image: grout2026/astro-weight-calculator:latest
+        port: 54321
+
+      - name: change-calculator
+        image: grout2026/web102-change-calculator:latest
+        port: 54322
+
+      - name: san-diego-top-spots
+        image: grout2026/web102-san-diego-top-spots:latest
+        port: 54323
+
+
+  ##########################################################
+  # Tasks
+  #
+  # Tasks are the operations Ansible performs on the server.
+  ##########################################################
+
+  tasks:
+
+    ########################################################
+    # Ensure Docker service is running
+    ########################################################
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+
+    ########################################################
+    # Pull Docker images from Docker Hub
+    ########################################################
+
+    - name: Pull container images
+      docker_image:
+        name: "{{ item.image }}"
+        source: pull
+      loop: "{{ containers }}"
+
+
+    ########################################################
+    # Run containers
+    ########################################################
+
+    - name: Run application containers
+      docker_container:
+        name: "{{ item.name }}"
+        image: "{{ item.image }}"
+        state: started
+        restart_policy: always
+        published_ports:
+          - "{{ item.port }}:8888"
+      loop: "{{ containers }}"

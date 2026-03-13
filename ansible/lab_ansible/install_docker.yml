@@ -1,0 +1,31 @@
+---
+############################################################
+# Install Docker on EC2 instance
+#
+# Hosts: web (defined in the Ansible inventory)
+# Privilege escalation: required for package installs
+############################################################
+#become: yes means run with sudo privelages
+- name: Install Docker on web servers
+  hosts: web
+  become: yes
+
+  tasks:
+
+    # Update package cache
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    # Install Docker
+    - name: Install Docker engine
+      apt:
+        name: docker.io
+        state: present
+
+    # Ensure Docker service is running
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
